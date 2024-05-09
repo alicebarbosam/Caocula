@@ -13,11 +13,13 @@ struct ContentView: View {
     @State var years: Int? = nil
     @State var months: Int? = nil
     @State var result: Int?
+    let portes = ["Pequeno", "Médio", "Grande"]
+    @State var porte: String = "Pequeno"
     
     var body: some View {
         
         VStack(alignment: .leading) {
-            Text("Qual a idade do seu cão")
+            Text("Qual a idade do seu cão?")
             Text("Anos")
             TextField("Quantos anos completos seu cão tem.", value: $years, format: .number)
               
@@ -26,7 +28,19 @@ struct ContentView: View {
             TextField("E quantos meses além disso ele tem.", value: $months, format: .number)
             
             Text("Porte")
-            //aqui fica segmented control
+            
+            Picker("Porte", selection: $porte){
+                ForEach(portes, id: \.self) { porte in
+                    Text(porte)
+                        .tag(porte)
+                }
+            }
+            .pickerStyle(.segmented)
+            
+            Divider()
+                .background(.purple)
+            Spacer()
+            
             if let result {
                 Text("Seu cachorro tem, em idade humana...")
                 Text("\(result) anos")
@@ -39,7 +53,9 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity)
                     .shadow(radius: 20)
             }
-            Button(action: {result = 23}, label: {
+            
+            Spacer()
+            Button(action: processYears, label: {
                 ZStack{
                     Color.purple
                     Text("Cãocular")
@@ -56,6 +72,17 @@ struct ContentView: View {
         .keyboardType(.numberPad)
         .bold()
         .fontDesign(.rounded)
+    }
+    func processYears(){
+        guard let years, let months else{
+            print("preencha o campo de entrada")
+            return
+        }
+        guard years > 0 || months > 0 else{
+            print("algum campo tem que ter valor maior que zero")
+            return
+        }
+        result = years * 7 + months*7/12
     }
 }
 
